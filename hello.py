@@ -1,5 +1,6 @@
 ﻿from flask import Flask, request, flash, url_for, redirect, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func, desc
 import pymysql
 import json   #转换成Json格式的程序
 
@@ -70,7 +71,7 @@ def comments():
 
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
-		rs = db.session.query(plan_price_ranges.pclass, (db.func.sum(lan_price_ranges.unit)).label('total_real_income')
+		rs= db.session.query(plan_price_ranges.pclass, (func.sum(plan_price_ranges.unit)).label('total_real_income'),  func.count(plan_price_ranges.id)).group_by(plan_price_ranges.pclass).order_by( desc('total_real_income')).all()
     result1 = []
     for line in rs:
         result1.append(line.to_json())
