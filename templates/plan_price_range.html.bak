@@ -32,7 +32,7 @@
 		<script type="text/javascript">
 			jQuery("#list").jqGrid(
 			{
-				url : "/comments/",
+				url : "/comments",
         datatype : "json",//请求数据返回的类型。可选json,xml,txt
 				height : 250, //"100%",
 				colNames : [ 'Inv No', 'Date', 'Client', 'Amount', 'Tax','Total', 'Notes' ],//jqGrid的列显示名字
