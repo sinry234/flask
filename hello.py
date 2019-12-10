@@ -9,6 +9,8 @@ app.config['SECRET_KEY'] = "random string"
 
 db = SQLAlchemy(app)
 
+# 数据字典
+# plan_price_ranges表的数据结构
 class plan_price_ranges(db.Model):
 	id = db.Column('id', db.Integer, primary_key = True)
 	store = db.Column(db.String(50))
@@ -28,16 +30,18 @@ class plan_price_ranges(db.Model):
 		self.month = month
 		self.unit = unit
 	
-	def to_json(self):
-		dict = self.__dict__
-		if "_sa_instance_state" in dict:
-			del dict["_sa_instance_state"]
-		return dict
+def to_json(self):
+	dict = self.__dict__
+	if "_sa_instance_state" in dict:
+		del dict["_sa_instance_state"]
+	return dict
 
+#显示所有数据
 @app.route('/')
 def show_all():
    return render_template('show_all.html', plan_price_ranges1 = plan_price_ranges.query.all() )
 
+#新增数据
 @app.route('/new', methods = ['GET', 'POST'])
 def new():
    if request.method == 'POST':
@@ -54,6 +58,7 @@ def new():
          return redirect(url_for('show_all'))
    return render_template('new.html')
 
+#获取plan_price_ranges表中的数据，转换为json格式
 @app.route('/comments', methods=['GET'])
 def comments():
     plan_price_ranges1 =  plan_price_ranges.query.all()
@@ -63,6 +68,7 @@ def comments():
     return jsonify({'rows': result})
     #return render_template('plan_price_range.html', result_json = jsonify({'row': result}))
 
+#获取全部数据的分类汇总透视表
 @app.route('/newppr', methods=['GET'])
 def newppr():
     return render_template('plan_price_range.html')
