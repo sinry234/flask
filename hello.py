@@ -70,7 +70,7 @@ def comments():
 
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
-		rs = db.session.query(plan_price_ranges.store,plan_price_ranges.gender,plan_price_ranges.pclass, func.sum(plan_price_ranges.unit)) \
+		rs = db.session.query(plan_price_ranges.store,plan_price_ranges.gender,plan_price_ranges.pclass, db.func.sum(plan_price_ranges.unit)) \
         .group_by(plan_price_ranges.store,plan_price_ranges.gender,plan_price_ranges.pclass).all()
         
         
