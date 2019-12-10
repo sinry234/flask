@@ -41,14 +41,14 @@
 				url : "/comments",
         datatype : "json",//请求数据返回的类型。可选json,xml,txt
 				height : "100%",
-				colNames : [ '序号', '门店ID', '部门', '类别', '价格带','年份', '月份' ,'计划销量'],//jqGrid的列显示名字
+				colNames : [ '序号', '门店ID', '部门', '类别', '年份', '计划销量'],//jqGrid的列显示名字
 				colModel : [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
 				             {name : 'id',index : 'id',width : 55, sorttype:'integer'}, 
 				             {name : 'store',index : 'store',width : 90, sorttype:'text'}, 
 				             {name : 'gender',index : 'gender asc, invdate',width : 100, sorttype:'text'}, 
 				             {name : 'pclass',index : 'pclass',width : 80,align : "right", sorttype:'text'}, 
 				             {name : 'year',index : 'year',width : 80,align : "right", sorttype:'integer'}, 
-				             {name : 'unit',index : 'unit',width : 150,sorttype:'integer',editable:true} 
+				             {name : 'unit',index : 'unit',width : 150,sorttype:'integer',editable:true,summaryType: 'sum'} 
 				           ],
 				rowNum : 10,//一页显示多少条
 				rowList : [ 10, 20, 30 ],//可供用户选择一页显示多少条
