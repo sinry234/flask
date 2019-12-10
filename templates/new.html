@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+   <body>
+   
+      <h3>门店品类价格带计划</h3>
+      <hr/>
+      
+      {%- for category, message in get_flashed_messages(with_categories = true) %}
+         <div class = "alert alert-danger">
+            {{ message }}
+         </div>
+      {%- endfor %}
+      
+      <form action = "{{ request.path }}" method = "post">
+         <label for = "store">门店ID：</label><br>
+         <input type = "text" name = "store" placeholder = "A01339S013" /><br>
+         <label for = "gender">部门：</label><br>
+         <input type = "text" name = "gender" placeholder = "男装" /><br>
+         <label for = "pclass">类别：</label><br>
+         <input type = "text" name = "pclass" placeholder = "短袖T恤" /><br>
+         <label for = "price">价格带：</label><br>
+         <input type = "text" name = "price" placeholder = "199" /><br>
+         <label for = "year">年</label><br>
+         <input type = "text" name = "year" placeholder = "2019" /><br>
+         <label for = "month">月</label><br>
+         <input type = "text" name = "month" placeholder = "1" /><br>
+         <label for = "unit">计划数量</label><br>
+         <input type = "text" name = "unit" placeholder = "0" /><br>
+         <input type = "submit" value = "提交" />
+      </form>
+   </body>
+</html>

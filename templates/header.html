@@ -1,0 +1,30 @@
+﻿<style>
+    .nav ul{
+        overflow: hidden;
+    }
+    .nav ul li{
+        float: left;
+        margin: 0 20px;
+    }
+</style>
+
+<nav class="nav">
+    <ul>
+        <li>首页</li>
+        <li>课程详情</li>
+        <li>教程视频</li>
+        <li>关于我们</li>
+    </ul>
+</nav>
+{% block body %}
+	<body>
+		<div class='container'>
+		<h3>Welcome! Which is the best programming language of them all?</h3>
+			<form>
+				<input type=text size=5 name=proglang>
+				<a href=# id=process_input><button class='btn btn-default'>Submit</button></a>
+			</form>
+		<p id=result></p>
+		</div>
+	</body>
+{% endblock %}
