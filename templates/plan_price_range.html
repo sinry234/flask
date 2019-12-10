@@ -34,8 +34,16 @@
       "/comments",
       // pivot options
       {
-        xDimension : [{dataName: 'store'},{dataName: 'gender'},{dataName: 'pclass'},{dataName: 'price'} ],
-        yDimension : [{dataName: 'year'},{dataName: 'month'} ],
+        xDimension : [
+	        {dataName: 'store'},
+	        {dataName: 'gender'},
+	        {dataName: 'pclass'},
+	        {dataName: 'price'} 
+        ],
+        yDimension : [
+	        {dataName: 'year'},
+	        {dataName: 'month'} 
+        ],
         aggregates : [
           { 
             member : 'unit', 
@@ -43,7 +51,8 @@
             width:80, 
             label:'Sum Price', 
             formatter:'number', 
-            align:'right'
+            align:'right',
+            editable:true
           }
         ]
       }, 
