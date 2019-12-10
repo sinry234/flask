@@ -69,13 +69,7 @@ def comments():
     return jsonify({'rows': result})
     #return render_template('plan_price_range.html', result_json = jsonify({'row': result}))
 
-@app.route('/get_category_sum', methods=['GET'])
-def get_category_sum():
-		rs= db.session.query(plan_price_ranges.pclass, (func.sum(plan_price_ranges.unit)).label('total_real_income'),  func.count(plan_price_ranges.id)).group_by(plan_price_ranges.pclass).order_by( desc('total_real_income')).all()
-    result1 = []
-    for line in rs:
-        result1.append(line.to_json())
-    return jsonify({'rows': result1})
+
         
 #获取全部数据的分类汇总透视表
 @app.route('/newppr', methods=['GET'])
