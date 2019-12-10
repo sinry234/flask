@@ -71,10 +71,10 @@ def comments():
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
 		rs = db.session.query(plan_price_ranges.store,plan_price_ranges.gender,plan_price_ranges.pclass, db.func.sum(plan_price_ranges.unit)).group_by(plan_price_ranges.store,plan_price_ranges.gender,plan_price_ranges.pclass).all()
-    result = []
+    result1 = []
     for line in rs:
-        result.append(line.to_json())
-    return jsonify({'rows': result})
+        result1.append(line.to_json())
+    return jsonify({'rows': result1})
         
 #获取全部数据的分类汇总透视表
 @app.route('/newppr', methods=['GET'])
