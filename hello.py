@@ -72,6 +72,11 @@ def comments():
 @app.route('/newppr', methods=['GET'])
 def newppr():
     return render_template('plan_price_range.html')
+
+#主从数据表
+@app.route('/layered', methods=['GET'])
+def layered():
+    return render_template('layered_tbls.html')
     
 @app.route('/interactive')
 def interactive():

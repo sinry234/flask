@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="cn">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -26,47 +26,16 @@
 		<!--script type="text/javascript" src="js/index.js"></script-->
 	</head>
 	<body>
+		主表：
 		<table id="list">
 			</table> 
 		<div id="gridpager"></div>
+		从表：
+		<table id="list_d">
+			</table> 
+		<div id="gridpager_d"></div>
+		
 		<script type="text/javascript">
-			jQuery("#list").jqGrid('jqPivot', 
-      "/comments",
-      // pivot options
-      {
-        xDimension : [
-	        {dataName: 'store'},
-	        {dataName: 'gender'},
-	        {dataName: 'pclass'},
-	        {dataName: 'price',sorttype:'integer'} 
-        ],
-        yDimension : [
-	        {dataName: 'year'},
-	        {dataName: 'month'} 
-        ],
-        aggregates : [
-          { 
-            member : 'unit', 
-            aggregator : 'sum', 
-            label:'Sum Unit', 
-            formatter:'integer', 
-            align:'right',
-            summaryType: 'sum',
-            editable:true
-          }
-        ],
-        //rowTotals: true,
-        colTotals: true
-      }, 
-      // grid options
-      {
-        width: 850,
-        height : "100%",
-        rowNum : 20,
-        pager: "#gridpager",
-        caption: "Amounts of each product category"
-      });
-			/*
 			jQuery("#list").jqGrid(
 			{
 				url : "/comments",
@@ -92,6 +61,56 @@
 				mtype : "get",//向后台请求数据的ajax的类型。可选post,get
 				viewrecords : true,
 				caption : "JSON Example",//表格的标题名字
+				onSelectRow : function(ids) {
+              if (ids == null) {
+                ids = 0;
+                if (jQuery("#list10_d").jqGrid('getGridParam',
+                    'records') > 0) {
+                  jQuery("#list_d").jqGrid(
+                      'setGridParam',
+                      {
+                        url : ctx+"/SubGrid?q=1&id="
+                            + ids,
+                        page : 1
+                      });
+                  jQuery("#list_d").jqGrid('setCaption',
+                      "Invoice Detail: " + ids).trigger(
+                      'reloadGrid');
+                }
+              } else {
+                jQuery("#list_d").jqGrid('setGridParam', {
+                  url : ctx+"/SubGrid?q=1&id=" + ids,
+                  page : 1
+                });
+                jQuery("#list_d").jqGrid('setCaption',
+                    "Invoice Detail: " + ids).trigger(
+                    'reloadGrid');
+              }
+            }
+			});
+			//创建jqGrid的操作按钮容器
+			//可以控制界面上增删改查的按钮是否显示
+			jQuery("#list").jqGrid('navGrid','#gridpager',{edit:false,add:true,del:false});
+			jQuery("#list_d").jqGrid(
+			{
+				url : "/comments",
+        datatype : "json",//请求数据返回的类型。可选json,xml,txt
+				height : "100%",
+				colNames : [ '价格带','月份' ,'计划销量'],//jqGrid的列显示名字
+				colModel : [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
+				             {name : 'price',index : 'price',width : 80,align : "right", sorttype:'integer'}, 
+				             {name : 'month',index : 'month',width : 150,sorttype:'integer'},
+				             {name : 'unit',index : 'unit',width : 150,sorttype:'integer',editable:true} 
+				           ],
+				rowNum : 10,//一页显示多少条
+				rowList : [ 10, 20, 30 ],//可供用户选择一页显示多少条
+				pager : '#gridpager_d',//表格页脚的占位符(一般是div)的id
+				loadonce:true,
+				sortname : 'id',//初始化的时候排序的字段
+				sortorder : 'desc',//排序方式,可选desc,asc
+				mtype : "get",//向后台请求数据的ajax的类型。可选post,get
+				viewrecords : true,
+				caption : "JSON Example",//表格的标题名字
 				forceFit : true,
 		    cellEdit: true,
 		    cellsubmit: 'clientArray',
@@ -111,10 +130,7 @@
 		      }
 		    }
 			});
-			//创建jqGrid的操作按钮容器
-			//可以控制界面上增删改查的按钮是否显示
-			jQuery("#list").jqGrid('navGrid','#gridpager',{edit:false,add:true,del:false});
-			*/
+		jQuery("#list_d").jqGrid('navGrid','#gridpager_d',{edit:false,add:true,del:false});
 		</script>
 	</body>
 </html>
