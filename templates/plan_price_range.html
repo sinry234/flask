@@ -31,47 +31,29 @@
 		<div id="gridpager"></div>
 		<script type="text/javascript">
 			jQuery("#list").jqGrid('jqPivot', 
-      // grid options
-      {
-      	url : "/comments",
-        datatype : "json",//请求数据返回的类型。可选json,xml,txt
-        width: 700,
-        rowNum : 10,
-        pager: "#gridpager",
-        caption: "Columns groups"
-      },
+      "/comments",
       // pivot options
       {
-        xDimension : [
-          {
-            dataName: 'store', 
-            width:90
-          },{
-            dataName: 'gender'
-          },{
-            dataName: 'pclass'
-          },{
-            dataName: 'price'
-          }
-        ],
-        yDimension : [
-          {
-            
-            dataName: 'month'
-          }
-        ],
+        xDimension : [{dataName: 'store'} ],
+        yDimension : [],
         aggregates : [
           { 
             member : 'unit', 
             aggregator : 'sum', 
-            width:50,
-            formatter:'number',
-            align:'right',
-            summaryType: 'sum'
+            width:80, 
+            label:'Sum Price', 
+            formatter:'number', 
+            align:'right'
           }
         ]
-      }
-      );
+      }, 
+      // grid options
+      {
+        width: 700,
+        rowNum : 150,
+        pager: "#gridpager",
+        caption: "Amounts of each product category"
+      });
 			/*
 			jQuery("#list").jqGrid(
 			{
