@@ -31,9 +31,15 @@
 		<div id="gridpager"></div>
 		<script type="text/javascript">
 			jQuery("#list").jqGrid('jqPivot', 
-		{	url : "/comments",
-        datatype : "json"//请求数据返回的类型。可选json,xml,txt
-        },
+      // grid options
+      {
+      	url : "/comments",
+        datatype : "json",//请求数据返回的类型。可选json,xml,txt
+        width: 700,
+        rowNum : 10,
+        pager: "#gridpager",
+        caption: "Columns groups"
+      }
       // pivot options
       {
         xDimension : [
@@ -65,13 +71,8 @@
           }
         ]
       }, 
-      // grid options
-      {
-        width: 700,
-        rowNum : 10,
-        pager: "#gridpager",
-        caption: "Columns groups"
-      });
+
+      );
 			
 			/*
 			jQuery("#list").jqGrid(
