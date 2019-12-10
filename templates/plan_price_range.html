@@ -35,7 +35,7 @@
 				url : "/comments",
         datatype : "json",//请求数据返回的类型。可选json,xml,txt
 				height : "100%",
-				colNames : [ '序号', '门店ID', '部门', '类别', '价格带','年份', '月份' ,'计划销售数量'],//jqGrid的列显示名字
+				colNames : [ '序号', '门店ID', '部门', '类别', '价格带','年份', '月份' ,'计划销量'],//jqGrid的列显示名字
 				colModel : [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
 				             {name : 'id',index : 'id',width : 55, sorttype:'integer'}, 
 				             {name : 'store',index : 'store',width : 90, sorttype:'text'}, 
@@ -55,7 +55,28 @@
 				mtype : "get",//向后台请求数据的ajax的类型。可选post,get
 				viewrecords : true,
 				caption : "JSON Example"//表格的标题名字
+				forceFit : true,
+		    cellEdit: true,
+		    cellsubmit: 'clientArray',
+		    afterEditCell: function (id,name,val,iRow,iCol){
+		      //if(name=='invdate') {
+		       // jQuery("#"+iRow+"_invdate","#celltbl").datepicker({dateFormat:"yy-mm-dd"});
+		      //}
+		    },
+		    afterSaveCell : function(rowid,name,val,iRow,iCol) {
+		      if(name == 'amount') {
+		        var taxval = jQuery("#celltbl").jqGrid('getCell',rowid,iCol+1);
+		        jQuery("#celltbl").jqGrid('setRowData',rowid,{total:parseFloat(val)+parseFloat(taxval)});
+		      }
+		      if(name == 'tax') {
+		        var amtval = jQuery("#celltbl").jqGrid('getCell',rowid,iCol-1);
+		        jQuery("#celltbl").jqGrid('setRowData',rowid,{total:parseFloat(val)+parseFloat(amtval)});
+		      }
+		    }
 			});
+			/*创建jqGrid的操作按钮容器*/
+			/*可以控制界面上增删改查的按钮是否显示*/
+			jQuery("#list").jqGrid('navGrid','#gridpager',{edit:false,add:false,del:false});
 		</script>
 	</body>
 </html>
