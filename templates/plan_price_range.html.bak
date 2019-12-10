@@ -38,12 +38,13 @@
 				colNames : [ 'Inv No', 'Date', 'Client', 'Amount', 'Tax','Total', 'Notes' ],//jqGrid的列显示名字
 				colModel : [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
 				             {name : 'id',index : 'id',width : 55, sorttype:'integer'}, 
-				             {name : 'store',index : 'store',width : 90, sorttype:'date'}, 
+				             {name : 'store',index : 'store',width : 90, sorttype:'text'}, 
 				             {name : 'gender',index : 'gender asc, invdate',width : 100, sorttype:'text'}, 
-				             {name : 'pclass',index : 'pclass',width : 80,align : "right", sorttype:'integer'}, 
+				             {name : 'pclass',index : 'pclass',width : 80,align : "right", sorttype:'text'}, 
 				             {name : 'price',index : 'price',width : 80,align : "right", sorttype:'integer'}, 
 				             {name : 'year',index : 'year',width : 80,align : "right", sorttype:'integer'}, 
-				             {name : 'month',index : 'month',width : 150,sortable : false} 
+				             {name : 'month',index : 'month',width : 150,sorttype:'integer'},
+				             {name : 'unit',index : 'unit',width : 150,sorttype:'integer'} 
 				           ],
 				rowNum : 10,//一页显示多少条
 				rowList : [ 10, 20, 30 ],//可供用户选择一页显示多少条
@@ -53,7 +54,6 @@
 				sortorder : 'desc',//排序方式,可选desc,asc
 				mtype : "get",//向后台请求数据的ajax的类型。可选post,get
 				viewrecords : true,
-				multiselect : true,
 				caption : "JSON Example"//表格的标题名字
 			});
 		</script>
