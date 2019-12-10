@@ -30,6 +30,54 @@
 			</table> 
 		<div id="gridpager"></div>
 		<script type="text/javascript">
+			jQuery("#list").jqGrid('jqPivot', 
+			{
+				url : "/comments",
+        datatype : "json",//请求数据返回的类型。可选json,xml,txt
+      // pivot options
+      {
+        xDimension : [
+          {
+            dataName: 'store', 
+            width:90
+          },{
+            dataName: 'gender'
+          },{
+            dataName: 'pclass'
+          },{
+            dataName: 'price'
+          }
+        ],
+        yDimension : [
+          {
+            dataName: 'year', 
+            converter : function(value, xData, yData){
+              return 'year';
+            }
+          },{
+            dataName: 'month'
+          }
+        ],
+        aggregates : [
+          { 
+            member : 'unit', 
+            aggregator : 'sum', 
+            width:50,
+            formatter:'number',
+            align:'right',
+            summaryType: 'sum'
+          }
+        ]
+      }, 
+      // grid options
+      {
+        width: 700,
+        rowNum : 10,
+        pager: "#gridpager",
+        caption: "Columns groups"
+      });
+			
+			/*
 			jQuery("#list").jqGrid(
 			{
 				url : "/comments",
@@ -74,9 +122,10 @@
 		      }
 		    }
 			});
-			/*创建jqGrid的操作按钮容器*/
-			/*可以控制界面上增删改查的按钮是否显示*/
+			//创建jqGrid的操作按钮容器
+			//可以控制界面上增删改查的按钮是否显示
 			jQuery("#list").jqGrid('navGrid','#gridpager',{edit:false,add:true,del:false});
+			*/
 		</script>
 	</body>
 </html>
