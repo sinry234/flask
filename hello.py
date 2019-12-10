@@ -30,11 +30,11 @@ class plan_price_ranges(db.Model):
 		self.month = month
 		self.unit = unit
 	
-def to_json(self):
-	dict = self.__dict__
-	if "_sa_instance_state" in dict:
-		del dict["_sa_instance_state"]
-	return dict
+	def to_json(self):
+		dict = self.__dict__
+		if "_sa_instance_state" in dict:
+			del dict["_sa_instance_state"]
+		return dict
 
 #显示所有数据
 @app.route('/')
