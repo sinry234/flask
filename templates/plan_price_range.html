@@ -35,10 +35,10 @@
       // pivot options
       {
         xDimension : [
-	        {dataName: 'store'},
-	        {dataName: 'gender'},
-	        {dataName: 'pclass'},
-	        {dataName: 'price',sorttype:'integer'} 
+	        {dataName: 'store',summaryType: 'sum'},
+	        {dataName: 'gender',summaryType: 'sum'},
+	        {dataName: 'pclass',summaryType: 'sum'},
+	        {dataName: 'price',sorttype:'integer',summaryType: 'sum'} 
         ],
         yDimension : [
 	        {dataName: 'year'},
@@ -55,7 +55,7 @@
             editable:true
           }
         ],
-        rowTotals: true,
+        //rowTotals: true,
         colTotals: true
       }, 
       // grid options
