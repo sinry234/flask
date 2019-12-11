@@ -108,7 +108,7 @@ class BaseModel(db.Model):
                 if hasattr(val, "to_dict"):
                     ret_data[key] = val.to_dict(
                         show=list(show),
-                        _hide=list(_hide), _path=("%s.%s" % (_path, key.lower()))
+                        _hide=list(_hide), _path=("%s.%s" % (_path, key.lower())),
                         _path=("%s.%s" % (_path, key.lower())),
                     )
                 else:
