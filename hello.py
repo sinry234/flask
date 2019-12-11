@@ -66,28 +66,18 @@ class AlchemyEncoder(json.JSONEncoder):
             return fields
         return json.JSONEncoder.default(self, obj)
  
-class DecimalEncoder(json.JSONEncoder):
+class MyEncoder(json.JSONEncoder):
     def default(self, obj):
+        """
+        只要检查到了是bytes类型的数据就把它转为str类型
+        :param obj:
+        :return:
+        """
+        if isinstance(obj, bytes):
+            return str(obj, encoding='utf-8')
         if isinstance(obj, decimal.Decimal):
-            obj=float(obj)
-            keys = [str(x) for x in np.arange(len(obj))]
-            list_json = dict(zip(keys, obj))
-            str_json = json.dumps(list_json, indent=2, ensure_ascii=False)  # json转为string
-            return str_json
-        #super(DecimalEncoder, self).default(o)
-
-
-class JSONHelper():
-    @staticmethod
-    def jsonBQlist(bqlist):
-        result=[]
-        for item in bqlist:
-            jsondata={}
-            for i in range(item.__len__()):
-                tdic={item._fields[i]:item[i]}
-                jsondata.update(tdic)  
-            result.append(jsondata)
-        return result
+            return float(obj)
+        return json.JSONEncoder.default(self, obj)
    
 #显示所有数据
 @app.route('/')
@@ -127,7 +117,7 @@ def get_category_sum():
     msgs = []
     for msg in UnReadMsg:
         msgs.append(msg)
-    rts = json.dumps(UnReadMsg, cls=AlchemyEncoder,ensure_ascii=False)
+    rts = json.dumps(msgs, cls=MyEncoder,ensure_ascii=False)
     #rts = jsonify(JSONHelper.jsonBQlist(msgs))
     return rts
         
