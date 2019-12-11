@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, desc
 import pymysql
 import json   #转换成Json格式的程序
+import numpy as np
+
 
 app = Flask(__name__, static_url_path='')
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:mbitadmin@localhost:3306/flask"
@@ -36,6 +38,13 @@ class plan_price_ranges(db.Model):
 		if "_sa_instance_state" in dict:
 			del dict["_sa_instance_state"]
 		return dict
+	
+	# list 转成Json格式数据
+	def listToJson(lst):
+    keys = [str(x) for x in np.arange(len(lst))]
+    list_json = dict(zip(keys, lst))
+    str_json = json.dumps(list_json, indent=2, ensure_ascii=False)  # json转为string
+    return str_json
 
 #显示所有数据
 @app.route('/')
@@ -73,10 +82,11 @@ def comments():
 def get_category_sum():
 		#rs = plan_price_ranges.query.with_entities(func.sum(plan_price_ranges.unit)).all()
 		rs = db.session.query(plan_price_ranges.pclass, func.count(plan_price_ranges.unit)).group_by(plan_price_ranges.pclass).all()
-		#result1 = []
+		result1 = []
 		#for line1 in rs:
 		#	result1.append(line1.to_json())
-		return rs
+		result1 = listToJson(rs)
+		return result1
         
 #获取全部数据的分类汇总透视表
 @app.route('/newppr', methods=['GET'])
