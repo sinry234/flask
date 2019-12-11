@@ -70,10 +70,11 @@ class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, decimal.Decimal):
             #obj=float(obj)
-            keys = [str(x) for x in np.arange(len(obj))]
-            list_json = dict(zip(keys, obj))
-            str_json = json.dumps(list_json, indent=2, ensure_ascii=False)  # json转为string
-            return str_json
+            #keys = [str(x) for x in np.arange(len(obj))]
+            #list_json = dict(zip(keys, obj))
+            #str_json = json.dumps(list_json, indent=2, ensure_ascii=False)  # json转为string
+            #return str_json
+            return float(obj)
         #super(DecimalEncoder, self).default(o)
     
 #显示所有数据
