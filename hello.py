@@ -73,13 +73,12 @@ def comments():
 
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
-		plan_price_ranges1 = plan_price_ranges.query.with_entities(func.sum(plan_price_ranges.unit)).all()
-		#rs = db.session.query(plan_price_ranges.pclass, func.count(plan_price_ranges.unit)).group_by(plan_price_ranges.pclass).all()
-		result = []
+    plan_price_ranges1 = plan_price_ranges.query.with_entities(func.sum(plan_price_ranges.unit)).all()
+    result = []
     for plan_price_range in plan_price_ranges1:
         result.append(plan_price_range.to_json())
     return jsonify({'rows': result})
-		return result1
+    return result1
         
 #获取全部数据的分类汇总透视表
 @app.route('/newppr', methods=['GET'])
