@@ -40,9 +40,6 @@ class plan_price_ranges(db.Model):
 		if "_sa_instance_state" in dict:
 			del dict["_sa_instance_state"]
 		return dict
-	
-	def to_json2(self):
-      return json.dumps(self,cls=DateEncoder)
 
 class DateEncoder(json.JSONEncoder):
     def default(self,obj):
