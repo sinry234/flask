@@ -43,12 +43,10 @@ class plan_price_ranges(db.Model):
 
 class DateEncoder(json.JSONEncoder):
     def default(self,obj):
-        if isinstance(obj, datetime.datetime):
+        if isinstance(obj, datetime):
             return obj.strftime(DATETIME)
-        elif isinstance(obj,datetime.date):
-            return obj.strftime(DATE)
         elif isinstance(obj,Decimal):
-            return str(obj)
+            return int(obj)
         else:
             return json.JSONEncoder.default(self,obj)
 
