@@ -76,7 +76,7 @@ def get_category_sum():
     plan_price_ranges1 = plan_price_ranges.query.with_entities(func.sum(plan_price_ranges.unit)).all()
     result = []
     for plan_price_range in plan_price_ranges1:
-        result.append(plan_price_range.to_json())
+        result.append(to_json(plan_price_range))
     return jsonify({'rows': result})
     return result1
         
