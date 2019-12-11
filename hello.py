@@ -47,7 +47,7 @@ def class_to_dict(obj):
     is_list = obj.__class__ == [].__class__
     is_set = obj.__class__ == set().__class__
     is_string = obj.__class__ == "".__class__
-    if is_list or is_set or is_string:
+    if is_list or is_set:
         obj_arr = []
         for o in obj:
             dict = {}
@@ -57,6 +57,8 @@ def class_to_dict(obj):
             dict.update(a)
             obj_arr.append(dict)
         return obj_arr
+    elif is_string:
+    	  return obj
     else:
         dict = {}
         a = obj.__dict__
