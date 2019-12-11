@@ -42,51 +42,51 @@ class plan_price_ranges(db.Model):
 		return dict
 
 
-def class_to_dict(obj):
-    
-    is_list = obj.__class__ == [].__class__
-    is_set = obj.__class__ == set().__class__
-    is_string = obj.__class__ == "".__class__
-    if is_list or is_set:
-        obj_arr = []
-        for o in obj:
-            dict = {}
-            a = o.__dict__
-            if "_sa_instance_state" in a:
-                del a['_sa_instance_state']
-            dict.update(a)
-            obj_arr.append(dict)
-        return obj_arr
-    elif is_string:
-        obj_arr = []
-        for o in obj:
-            obj_arr.append(o)
-        return obj_arr
-    else:
-        dict = {}
-        a = obj.__dict__
-        if "_sa_instance_state" in a:
-            del a['_sa_instance_state']
-        dict.update(a)
-        return dict
+	def class_to_dict(obj):
+	    
+	    is_list = obj.__class__ == [].__class__
+	    is_set = obj.__class__ == set().__class__
+	    is_string = obj.__class__ == "".__class__
+	    if is_list or is_set:
+	        obj_arr = []
+	        for o in obj:
+	            dict = {}
+	            a = o.__dict__
+	            if "_sa_instance_state" in a:
+	                del a['_sa_instance_state']
+	            dict.update(a)
+	            obj_arr.append(dict)
+	        return obj_arr
+	    elif is_string:
+	        obj_arr = []
+	        for o in obj:
+	            obj_arr.append(o)
+	        return obj_arr
+	    else:
+	        dict = {}
+	        a = obj.__dict__
+	        if "_sa_instance_state" in a:
+	            del a['_sa_instance_state']
+	        dict.update(a)
+	        return dict
 
-#函数toJsonList，注意：toJsonList调用了class_to_dict函数，就是上面单表查询列出来的转换函数
-def toJsonList(res):
-    count = 0
-    jsonList = []
-    dict = {}
-    for u in res:
-        for c in u:
-            count += 1
-            if (count <= len(u)):
-                dict.update(class_to_dict(c))  #函数classclass_to_dict
-                if count == len(u):
-                    jsonList.append(dict)
-            else:
-                count = 1
-                dict = {}
-                dict.update(class_to_dict(c))  #函数classclass_to_dict
-    return jsonList;
+	#函数toJsonList，注意：toJsonList调用了class_to_dict函数，就是上面单表查询列出来的转换函数
+	def toJsonList(res):
+	    count = 0
+	    jsonList = []
+	    dict = {}
+	    for u in res:
+	        for c in u:
+	            count += 1
+	            if (count <= len(u)):
+	                dict.update(class_to_dict(c))  #函数classclass_to_dict
+	                if count == len(u):
+	                    jsonList.append(dict)
+	            else:
+	                count = 1
+	                dict = {}
+	                dict.update(class_to_dict(c))  #函数classclass_to_dict
+	    return jsonList;
 
    
 #显示所有数据
@@ -124,7 +124,7 @@ def comments():
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
     UnReadMsg = db.session.query(plan_price_ranges.pclass, func.sum(plan_price_ranges.unit).label("销售数量")).group_by(plan_price_ranges.pclass).all()
-    return class_to_dict(UnReadMsg)
+    return plan_price_ranges.class_to_dict(UnReadMsg)
         
 #获取全部数据的分类汇总透视表
 @app.route('/newppr', methods=['GET'])
