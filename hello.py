@@ -76,7 +76,8 @@ class MyEncoder(json.JSONEncoder):
         if isinstance(obj, bytes):
             return str(obj, encoding='utf-8')
         if isinstance(obj, decimal.Decimal):
-            return float(obj)
+            data = float(obj)
+            return json.dumps(data) 
         return json.JSONEncoder.default(self, obj)
    
 #显示所有数据
