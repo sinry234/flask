@@ -6,7 +6,7 @@ from sqlalchemy import func, desc
 import pymysql
 import json   #转换成Json格式的程序
 import numpy as np
-from decimal import Decimal 
+import decimal
 
 app = Flask(__name__, static_url_path='')
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:mbitadmin@localhost:3306/flask"
@@ -64,7 +64,13 @@ class AlchemyEncoder(json.JSONEncoder):
             # a json-encodable dict
             return fields
         return json.JSONEncoder.default(self, obj)
-        
+ 
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return float(o)
+        super(DecimalEncoder, self).default(o)
+    
 #显示所有数据
 @app.route('/')
 def show_all():
@@ -103,7 +109,7 @@ def get_category_sum():
     msgs = []
     for msg in UnReadMsg:
         msgs.append(msg)
-    rts = json.dumps(msgs, cls=AlchemyEncoder,ensure_ascii=False)
+    rts = json.dumps(msgs, cls=DecimalEncoder,ensure_ascii=False)
     return rts
         
 #获取全部数据的分类汇总透视表
