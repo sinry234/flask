@@ -59,7 +59,57 @@ class DateEncoder(json.JSONEncoder):
         else:
             return json.JSONEncoder.default(self,obj)
 
-   
+def queryToDict(models):
+    if(isinstance(models,list)):
+        if(isinstance(models[0],Model)):
+            lst = []
+            for model in models:
+                gen = model_to_dict(model)
+                dit = dict((g[0],g[1]) for g in gen)
+                lst.append(dit)
+            return lst
+        else:
+            res = result_to_dict(models)
+            return res
+    else:
+        if (isinstance(models, Model)):
+            gen = model_to_dict(models)
+            dit = dict((g[0],g[1]) for g in gen)
+            return dit
+        else:
+            res = dict(zip(models.keys(), models))
+            find_datetime(res)
+            return res
+#当结果为result对象列表时，result有key()方法
+def result_to_dict(results):
+    res = [dict(zip(r.keys(), r)) for r in results]
+    #这里r为一个字典，对象传递直接改变字典属性
+    for r in res:
+        find_datetime(r)
+    return res
+def model_to_dict(model):      #这段来自于参考资源
+    for col in model.__table__.columns:
+        if isinstance(col.type, DateTime):
+            value = convert_datetime(getattr(model, col.name))
+        elif isinstance(col.type, Numeric):
+            value = float(getattr(model, col.name))
+        else:
+            value = getattr(model, col.name)
+        yield (col.name, value)
+def find_datetime(value):
+    for v in value:
+        if (isinstance(value[v], cdatetime)):
+            value[v] = convert_datetime(value[v])   #这里原理类似，修改的字典对象，不用返回即可修改
+def convert_datetime(value):
+    if value:
+        if(isinstance(value,(cdatetime,DateTime))):
+            return value.strftime("%Y-%m-%d %H:%M:%S")
+        elif(isinstance(value,(date,Date))):
+            return value.strftime("%Y-%m-%d")
+        elif(isinstance(value,(Time,time))):
+            return value.strftime("%H:%M:%S")
+    else:
+        return ""   
 #显示所有数据
 @app.route('/')
 def show_all():
@@ -95,7 +145,7 @@ def comments():
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
     UnReadMsg = db.session.query(plan_price_ranges.pclass, func.sum(plan_price_ranges.unit).label("销售数量")).group_by(plan_price_ranges.pclass).all()
-    return UnReadMsg.to_json2()
+    return result_to_dict(UnReadMsg)
         
 #获取全部数据的分类汇总透视表
 @app.route('/newppr', methods=['GET'])
