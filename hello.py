@@ -33,11 +33,11 @@ class plan_price_ranges(db.Model):
 		self.month = month
 		self.unit = unit
 	
-	def to_json(self):
-		dict = self.__dict__
-		if "_sa_instance_state" in dict:
-			del dict["_sa_instance_state"]
-		return dict
+def to_json(rst):
+	dict = rst.__dict__
+	if "_sa_instance_state" in dict:
+		del dict["_sa_instance_state"]
+	return dict
 
 #显示所有数据
 @app.route('/')
@@ -67,7 +67,7 @@ def comments():
     plan_price_ranges1 =  plan_price_ranges.query.all()
     result = []
     for plan_price_range in plan_price_ranges1:
-        result.append(plan_price_range.to_json())
+        result.append(to_json(plan_price_range))
     return jsonify({'rows': result})
     #return render_template('plan_price_range.html', result_json = jsonify({'row': result}))
 
