@@ -105,7 +105,7 @@ def comments():
 
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
-    UnReadMsg = plan_price_ranges.query.with_entities(func.sum(plan_price_ranges.unit)).all()
+    UnReadMsg = db.session.query(plan_price_ranges.pclass, func.sum(plan_price_ranges.unit).label("销售数量")).group_by(plan_price_ranges.pclass).all()
     msgs = []
     for msg in UnReadMsg:
         msgs.append(msg)
