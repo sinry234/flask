@@ -33,11 +33,11 @@ class plan_price_ranges(db.Model):
 		self.month = month
 		self.unit = unit
 	
-def to_json(rst):
-	dict = rst.__dict__
-	if "_sa_instance_state" in dict:
-		del dict["_sa_instance_state"]
-	return dict
+	def to_json(self):
+		dict = self.__dict__
+		if "_sa_instance_state" in dict:
+			del dict["_sa_instance_state"]
+		return dict
 
 #显示所有数据
 @app.route('/')
@@ -67,18 +67,19 @@ def comments():
     plan_price_ranges1 =  plan_price_ranges.query.all()
     result = []
     for plan_price_range in plan_price_ranges1:
-        result.append(to_json(plan_price_range))
+        result.append(plan_price_range.to_json())
     return jsonify({'rows': result})
     #return render_template('plan_price_range.html', result_json = jsonify({'row': result}))
 
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
-    plan_price_ranges1 = plan_price_ranges.query.with_entities(func.sum(plan_price_ranges.unit)).all()
-    result = []
-    for plan_price_range in plan_price_ranges1:
-        result.append(to_json(plan_price_range))
-    return jsonify({'rows': result})
-    return result1
+    UnReadMsg = plan_price_ranges.query.with_entities(func.sum(plan_price_ranges.unit)).all()
+    #UnReadMsg = self.db.query(Message).filter(Message.uid == self.uid)
+    msgs = []
+    for msg in UnReadMsg:
+        msgs.append(msg.json)
+    print(msgs)
+    return JsonResponse(self, 50000, data=msgs)   
         
 #获取全部数据的分类汇总透视表
 @app.route('/newppr', methods=['GET'])
