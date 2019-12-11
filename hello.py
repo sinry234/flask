@@ -57,11 +57,13 @@ def new_alchemy_encoder():
                 for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
                     data = obj.__getattribute__(field)
                     try:
-                        if isinstance(data, datetime):
-                            data = data.strftime('%Y-%m-%d %H:%M:%S')
-                        if isinstance(data, Decimal):
-                            data = float(data)                                               
-                        json.dumps(data)  # this will fail on non-encodable values, like other classes
+                    	  if isinstance(data, decimal.Decimal):
+                            data = float(data)
+                            json.dumps(ret_list, cls=DecimalEncoder)
+                        else
+                            if isinstance(data, datetime):
+                                data = data.strftime('%Y-%m-%d %H:%M:%S')
+                            json.dumps(data)  # this will fail on non-encodable values, like other classes
                         fields[field] = data
                     except TypeError:
                         fields[field] = None
