@@ -69,7 +69,7 @@ class AlchemyEncoder(json.JSONEncoder):
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, decimal.Decimal):
-            obj=float(obj)
+            #obj=float(obj)
             keys = [str(x) for x in np.arange(len(obj))]
             list_json = dict(zip(keys, obj))
             str_json = json.dumps(list_json, indent=2, ensure_ascii=False)  # json转为string
