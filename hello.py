@@ -74,7 +74,7 @@ class DecimalEncoder(json.JSONEncoder):
             #list_json = dict(zip(keys, obj))
             #str_json = json.dumps(list_json, indent=2, ensure_ascii=False)  # json转为string
             #return str_json
-            return float(obj)
+            return int(obj)
         #super(DecimalEncoder, self).default(o)
     
 #显示所有数据
