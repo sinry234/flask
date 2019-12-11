@@ -70,7 +70,7 @@ class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, decimal.Decimal):
             return float(o)
-        super(DecimalEncoder, self).default(o)
+        #super(DecimalEncoder, self).default(o)
     
 #显示所有数据
 @app.route('/')
