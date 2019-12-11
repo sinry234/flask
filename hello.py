@@ -77,8 +77,8 @@ def queryToDict(models):
 def result_to_dict(results):
     res = [dict(zip(r.keys(), r)) for r in results]
     #这里r为一个字典，对象传递直接改变字典属性
-    for r in res:
-        find_datetime(r)
+    #for r in res:
+    #    find_datetime(r)
     return res
 def model_to_dict(model):      #这段来自于参考资源
     for col in model.__table__.columns:
