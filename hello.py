@@ -72,7 +72,7 @@ def comments():
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
 		#rs = plan_price_ranges.query.with_entities(func.sum(plan_price_ranges.unit)).all()
-		rs = plan_price_ranges.query(pclass, func.sum(plan_price_ranges.unit).label("销售数量")).group_by(User.pclass).all()
+		rs = plan_price_ranges.query(pclass, func.sum(plan_price_ranges.unit).label("销售数量")).group_by(plan_price_ranges.pclass).all()
 		result1 = []
 		for line1 in rs:
 			result1.append(line1.to_json())
