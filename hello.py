@@ -60,7 +60,7 @@ def new_alchemy_encoder():
                     	  if isinstance(data, decimal.Decimal):
                             data = float(data)
                             json.dumps(ret_list, cls=DecimalEncoder)
-                        else
+                        else:
                             if isinstance(data, datetime):
                                 data = data.strftime('%Y-%m-%d %H:%M:%S')
                             json.dumps(data)  # this will fail on non-encodable values, like other classes
