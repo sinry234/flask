@@ -110,7 +110,7 @@ def get_category_sum():
     msgs = []
     for msg in UnReadMsg:
         msgs.append(msg)
-    rts = json.dumps(msgs, cls=AlchemyEncoder,ensure_ascii=False)
+    rts = json.dumps(msgs, cls=DecimalEncoder,ensure_ascii=False)
     return rts
         
 #获取全部数据的分类汇总透视表
