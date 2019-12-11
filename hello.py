@@ -42,7 +42,7 @@ class plan_price_ranges(db.Model):
 		return dict
 
 class AlchemyEncoder(json.JSONEncoder):
-	  _visited_objs = []
+    _visited_objs = []
     def default(self, obj):
         if isinstance(obj.__class__, DeclarativeMeta):
             # don't re-visit self
@@ -54,7 +54,7 @@ class AlchemyEncoder(json.JSONEncoder):
             for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
                 data = obj.__getattribute__(field)
                 try:
-                	  if isinstance(data,  decimal.Decimal):
+                    if isinstance(data,  decimal.Decimal):
                         data = float(data)                   
                     else if isinstance(data, datetime):
                         data = data.strftime('%Y-%m-%d %H:%M:%S')
