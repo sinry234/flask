@@ -56,7 +56,7 @@ class AlchemyEncoder(json.JSONEncoder):
                 try:
                     if isinstance(data, decimal.Decimal):
                         data = float(data)
-                    if isinstance(data, datetime):
+                    elif isinstance(data, datetime):
                         data = data.strftime('%Y-%m-%d %H:%M:%S')
                     json.dumps(data)  # this will fail on non-encodable values, like other classes
                     fields[field] = data
