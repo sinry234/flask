@@ -41,43 +41,47 @@ class plan_price_ranges(db.Model):
 			del dict["_sa_instance_state"]
 		return dict
 
-class AlchemyEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj.__class__, DeclarativeMeta):
-            # an SQLAlchemy class
-            fields = {}
-            for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
-                data = obj.__getattribute__(field)
-                try:
-                    json.dumps(data)    # this will fail on non-encodable values, like other classes
-                    fields[field] = data
-                except TypeError:    # 添加了对datetime的处理
-                    print(type(data),data)
-                    if isinstance(data, datetime.datetime):
-                        fields[field] = data.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3] # SQLserver数据库中毫秒是3位，日期格式;2015-05-12 11:13:58.543
-                    elif isinstance(data, datetime.date):
-                        fields[field] = datadata.strftime("%Y-%m-%d")
-                    elif isinstance(data, decimal.Decimal):
-                        fields[field]= float(data)
-                        #return float(data)
-                    else:
-                        fields[field] = AlchemyEncoder.default(self, data) # 如果是自定义类，递归调用解析JSON，这个是对象映射关系表 也加入到JSON
-            # a json-encodable dict
-            return fields
-        return json.JSONEncoder.default(self, obj)
- 
-class MyEncoder(json.JSONEncoder):
-    def default(self, obj):
-        """
-        只要检查到了是bytes类型的数据就把它转为str类型
-        :param obj:
-        :return:
-        """
-        if isinstance(obj, bytes):
-            data = str(obj, encoding='utf-8')
-        if isinstance(obj, decimal.Decimal):
-            data = int(obj)
-        return dict(data)
+
+def class_to_dict(obj):
+    
+    is_list = obj.__class__ == [].__class__
+    is_set = obj.__class__ == set().__class__
+    if is_list or is_set:
+        obj_arr = []
+        for o in obj:
+            dict = {}
+            a = o.__dict__
+            if "_sa_instance_state" in a:
+                del a['_sa_instance_state']
+            dict.update(a)
+            obj_arr.append(dict)
+        return obj_arr
+    else:
+        dict = {}
+        a = obj.__dict__
+        if "_sa_instance_state" in a:
+            del a['_sa_instance_state']
+        dict.update(a)
+        return dict
+
+#函数toJsonList，注意：toJsonList调用了class_to_dict函数，就是上面单表查询列出来的转换函数
+def toJsonList(res):
+    count = 0
+    jsonList = []
+    dict = {}
+    for u in res:
+        for c in u:
+            count += 1
+            if (count <= len(u)):
+                dict.update(class_to_dict(c))  #函数classclass_to_dict
+                if count == len(u):
+                    jsonList.append(dict)
+            else:
+                count = 1
+                dict = {}
+                dict.update(class_to_dict(c))  #函数classclass_to_dict
+    return jsonList;
+
    
 #显示所有数据
 @app.route('/')
@@ -114,12 +118,7 @@ def comments():
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
     UnReadMsg = db.session.query(plan_price_ranges.pclass, func.sum(plan_price_ranges.unit).label("销售数量")).group_by(plan_price_ranges.pclass).all()
-    msgs = []
-    for msg in UnReadMsg:
-        msgs.append(msg)
-    rts = json.dumps(msgs, cls=MyEncoder,ensure_ascii=False)
-    #rts = jsonify(JSONHelper.jsonBQlist(msgs))
-    return rts
+    return toJsonList(UnReadMsg)
         
 #获取全部数据的分类汇总透视表
 @app.route('/newppr', methods=['GET'])
