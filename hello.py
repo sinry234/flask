@@ -40,53 +40,25 @@ class plan_price_ranges(db.Model):
 		if "_sa_instance_state" in dict:
 			del dict["_sa_instance_state"]
 		return dict
+	
+	def to_json2(self):
+      json_data = {
+        'pclass': self.pclass,
+        'unit': self.销售数量
+     }
+     return json.dumps(json_data,cls=DateEncoder)
 
 
-	def class_to_dict(obj):
-	    
-	    is_list = obj.__class__ == [].__class__
-	    is_set = obj.__class__ == set().__class__
-	    is_string = obj.__class__ == "".__class__
-	    if is_list or is_set:
-	        obj_arr = []
-	        for o in obj:
-	            dict = {}
-	            a = o.__dict__
-	            if "_sa_instance_state" in a:
-	                del a['_sa_instance_state']
-	            dict.update(a)
-	            obj_arr.append(dict)
-	        return obj_arr
-	    elif is_string:
-	        obj_arr = []
-	        for o in obj:
-	            obj_arr.append(o)
-	        return obj_arr
-	    else:
-	        dict = {}
-	        a = obj.__dict__
-	        if "_sa_instance_state" in a:
-	            del a['_sa_instance_state']
-	        dict.update(a)
-	        return dict
-
-	#函数toJsonList，注意：toJsonList调用了class_to_dict函数，就是上面单表查询列出来的转换函数
-	def toJsonList(res):
-	    count = 0
-	    jsonList = []
-	    dict = {}
-	    for u in res:
-	        for c in u:
-	            count += 1
-	            if (count <= len(u)):
-	                dict.update(class_to_dict(c))  #函数classclass_to_dict
-	                if count == len(u):
-	                    jsonList.append(dict)
-	            else:
-	                count = 1
-	                dict = {}
-	                dict.update(class_to_dict(c))  #函数classclass_to_dict
-	    return jsonList;
+class DateEncoder(json.JSONEncoder):
+    def default(self,obj):
+        if isinstance(obj, datetime.datetime):
+            return obj.strftime(DATETIME)
+        elif isinstance(obj,datetime.date):
+            return obj.strftime(DATE)
+        elif isinstance(obj,Decimal):
+            return str(obj)
+        else:
+            return json.JSONEncoder.default(self,obj)
 
    
 #显示所有数据
@@ -124,10 +96,7 @@ def comments():
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
     UnReadMsg = db.session.query(plan_price_ranges.pclass, func.sum(plan_price_ranges.unit).label("销售数量")).group_by(plan_price_ranges.pclass).all()
-    result = []
-    for plan_price_range in UnReadMsg:
-        result.append(plan_price_range.to_json())
-    return jsonify({'rows': result})
+    return UnReadMsg.to_json2()
         
 #获取全部数据的分类汇总透视表
 @app.route('/newppr', methods=['GET'])
