@@ -74,11 +74,10 @@ class MyEncoder(json.JSONEncoder):
         :return:
         """
         if isinstance(obj, bytes):
-            return str(obj, encoding='utf-8')
+            data = str(obj, encoding='utf-8')
         if isinstance(obj, decimal.Decimal):
-            data = float(obj)
-            return json.dumps(data) 
-        return json.JSONEncoder.default(self, obj)
+            data = int(obj)
+        return dict(data)
    
 #显示所有数据
 @app.route('/')
