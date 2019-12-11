@@ -41,53 +41,35 @@ class plan_price_ranges(db.Model):
 			del dict["_sa_instance_state"]
 		return dict
 
-def alchemy_json_encoder(revisit_self = False, fields_to_expand = [], fields_to_ignore = [], fields_to_replace = {}):
-   """
-   Serialize SQLAlchemy result into JSon
-   :param revisit_self: True / False
-   :param fields_to_expand: Fields which are to be expanded for including their children and all
-   :param fields_to_ignore: Fields to be ignored while encoding
-   :param fields_to_replace: Field keys to be replaced by values assigned in dictionary
-   :return: Json serialized SQLAlchemy object
-   """
-   _visited_objs = []
-   class AlchemyEncoder(json.JSONEncoder):
-      def default(self, obj):
+class AlchemyEncoder(json.JSONEncoder):
+    def default(self, obj):
         if isinstance(obj.__class__, DeclarativeMeta):
-            # don't re-visit self
-            if revisit_self:
-                if obj in _visited_objs:
-                    return None
-                _visited_objs.append(obj)
-
-            # go through each field in this SQLalchemy class
+            # an SQLAlchemy class
             fields = {}
-            for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata' and x not in fields_to_ignore]:
-                val = obj.__getattribute__(field)
-                # is this field method defination, or an SQLalchemy object
-                if not hasattr(val, "__call__") and not isinstance(val, BaseQuery):
-                    field_name = fields_to_replace[field] if field in fields_to_replace else field
-                    # is this field another SQLalchemy object, or a list of SQLalchemy objects?
-                    if isinstance(val.__class__, DeclarativeMeta) or \
-                            (isinstance(val, list) and len(val) > 0 and isinstance(val[0].__class__, DeclarativeMeta)):
-                        # unless we're expanding this field, stop here
-                        if field not in fields_to_expand:
-                            # not expanding this field: set it to None and continue
-                            fields[field_name] = None
-                            continue
-
-                    fields[field_name] = val
+            for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
+                data = obj.__getattribute__(field)
+                try:
+                    json.dumps(data)    # this will fail on non-encodable values, like other classes
+                    fields[field] = data
+                except TypeError:    # 添加了对datetime的处理
+                    print(type(data),data)
+                    if isinstance(data, datetime.datetime):
+                        fields[field] = data.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3] # SQLserver数据库中毫秒是3位，日期格式;2015-05-12 11:13:58.543
+                    elif isinstance(data, datetime.date):
+                        fields[field] = datadata.strftime("%Y-%m-%d")
+                    elif isinstance(data, decimal.Decimal):
+                        fields[field]= float(data)
+                        #return float(data)
+                    else:
+                        fields[field] = AlchemyEncoder.default(self, data) # 如果是自定义类，递归调用解析JSON，这个是对象映射关系表 也加入到JSON
             # a json-encodable dict
             return fields
-
         return json.JSONEncoder.default(self, obj)
-   return AlchemyEncoder
  
 class DecimalEncoder(json.JSONEncoder):
-    def default(self, obj):
-    	  fields = {}
-        if isinstance(obj, decimal.Decimal):
-            return float(obj)
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return float(o)
         #super(DecimalEncoder, self).default(o)
     
 #显示所有数据
@@ -128,7 +110,7 @@ def get_category_sum():
     msgs = []
     for msg in UnReadMsg:
         msgs.append(msg)
-    rts = json.dumps(msgs, cls=AlchemyEncoder,ensure_ascii=False)
+    rts = json.dumps(msgs, cls=DecimalEncoder,ensure_ascii=False)
     return rts
         
 #获取全部数据的分类汇总透视表
