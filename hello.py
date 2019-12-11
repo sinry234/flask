@@ -79,8 +79,8 @@ def result_to_dict(results):
     #这里r为一个字典，对象传递直接改变字典属性
     #for r in res:
     #    find_datetime(r)
-    print('--------',res)
-    return res
+    print('--------',json.dumps(res,cls=DateEncoder))
+    return json.dumps(res,cls=DateEncoder)
 def model_to_dict(model):      #这段来自于参考资源
     for col in model.__table__.columns:
         if isinstance(col.type, DateTime):
