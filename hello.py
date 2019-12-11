@@ -41,6 +41,11 @@ class plan_price_ranges(db.Model):
 			del dict["_sa_instance_state"]
 		return dict
 
+#当结果为result对象列表时，result有key()方法
+def result_to_dict(results):
+    res = [dict(zip(r.keys(), r)) for r in results]
+    return json.dumps(res,cls=DateEncoder)
+    
 class DateEncoder(json.JSONEncoder):
     def default(self,obj):
         if isinstance(obj, datetime):
@@ -50,7 +55,8 @@ class DateEncoder(json.JSONEncoder):
         else:
             return json.JSONEncoder.default(self,obj)
 
-def queryToDict(models):
+##########################以下暂时不用##########################
+'''def queryToDict(models):
     if(isinstance(models,list)):
         if(isinstance(models[0],Model)):
             lst = []
@@ -71,14 +77,7 @@ def queryToDict(models):
             res = dict(zip(models.keys(), models))
             find_datetime(res)
             return res
-#当结果为result对象列表时，result有key()方法
-def result_to_dict(results):
-    res = [dict(zip(r.keys(), r)) for r in results]
-    #这里r为一个字典，对象传递直接改变字典属性
-    #for r in res:
-    #    find_datetime(r)
-    print('--------',json.dumps(res,cls=DateEncoder))
-    return json.dumps(res,cls=DateEncoder)
+
 def model_to_dict(model):      #这段来自于参考资源
     for col in model.__table__.columns:
         if isinstance(col.type, DateTime):
@@ -102,6 +101,10 @@ def convert_datetime(value):
             return value.strftime("%H:%M:%S")
     else:
         return ""   
+'''
+##########################以上暂时不用##########################       
+        
+        
 #显示所有数据
 @app.route('/')
 def show_all():
