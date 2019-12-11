@@ -60,7 +60,7 @@ def class_to_dict(obj):
     elif is_string:
         obj_arr = []
         for o in obj:
-            obj_arr.append(dict)
+            obj_arr.append(o)
         return obj_arr
     else:
         dict = {}
