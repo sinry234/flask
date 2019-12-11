@@ -69,14 +69,26 @@ class AlchemyEncoder(json.JSONEncoder):
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, decimal.Decimal):
-            #obj=float(obj)
-            #keys = [str(x) for x in np.arange(len(obj))]
-            #list_json = dict(zip(keys, obj))
-            #str_json = json.dumps(list_json, indent=2, ensure_ascii=False)  # json转为string
-            #return str_json
-            return int(obj)
+            obj=float(obj)
+            keys = [str(x) for x in np.arange(len(obj))]
+            list_json = dict(zip(keys, obj))
+            str_json = json.dumps(list_json, indent=2, ensure_ascii=False)  # json转为string
+            return str_json
         #super(DecimalEncoder, self).default(o)
-    
+
+
+class JSONHelper():
+    @staticmethod
+    def jsonBQlist(bqlist):
+        result=[]
+        for item in bqlist:
+            jsondata={}
+            for i in range(item.__len__()):
+                tdic={item._fields[i]:item[i]}
+                jsondata.update(tdic)  
+            result.append(jsondata)
+        return result
+   
 #显示所有数据
 @app.route('/')
 def show_all():
@@ -115,7 +127,7 @@ def get_category_sum():
     msgs = []
     for msg in UnReadMsg:
         msgs.append(msg)
-    rts = json.dumps(msgs, cls=DecimalEncoder,ensure_ascii=False)
+    rts = json.dumps(msgs, cls=JSONHelper,ensure_ascii=False)
     return rts
         
 #获取全部数据的分类汇总透视表
