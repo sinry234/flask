@@ -41,29 +41,47 @@ class plan_price_ranges(db.Model):
 			del dict["_sa_instance_state"]
 		return dict
 
-class AlchemyEncoder(json.JSONEncoder):
-    _visited_objs = []
-    def default(self, obj):
+def alchemy_json_encoder(revisit_self = False, fields_to_expand = [], fields_to_ignore = [], fields_to_replace = {}):
+   """
+   Serialize SQLAlchemy result into JSon
+   :param revisit_self: True / False
+   :param fields_to_expand: Fields which are to be expanded for including their children and all
+   :param fields_to_ignore: Fields to be ignored while encoding
+   :param fields_to_replace: Field keys to be replaced by values assigned in dictionary
+   :return: Json serialized SQLAlchemy object
+   """
+   _visited_objs = []
+   class AlchemyEncoder(json.JSONEncoder):
+      def default(self, obj):
         if isinstance(obj.__class__, DeclarativeMeta):
             # don't re-visit self
-            if obj in _visited_objs:
-                return None
-            _visited_objs.append(obj)
-            # an SQLAlchemy class
+            if revisit_self:
+                if obj in _visited_objs:
+                    return None
+                _visited_objs.append(obj)
+
+            # go through each field in this SQLalchemy class
             fields = {}
-            for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
-                data = obj.__getattribute__(field)
-                try:
-                    if isinstance(data, decimal.Decimal):
-                        data = float(data)
-                    elif isinstance(data, datetime):
-                        data = data.strftime('%Y-%m-%d %H:%M:%S')
-                    json.dumps(data)  # this will fail on non-encodable values, like other classes
-                    fields[field] = data
-                except TypeError:
-                    fields[field] = None
+            for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata' and x not in fields_to_ignore]:
+                val = obj.__getattribute__(field)
+                # is this field method defination, or an SQLalchemy object
+                if not hasattr(val, "__call__") and not isinstance(val, BaseQuery):
+                    field_name = fields_to_replace[field] if field in fields_to_replace else field
+                    # is this field another SQLalchemy object, or a list of SQLalchemy objects?
+                    if isinstance(val.__class__, DeclarativeMeta) or \
+                            (isinstance(val, list) and len(val) > 0 and isinstance(val[0].__class__, DeclarativeMeta)):
+                        # unless we're expanding this field, stop here
+                        if field not in fields_to_expand:
+                            # not expanding this field: set it to None and continue
+                            fields[field_name] = None
+                            continue
+
+                    fields[field_name] = val
+            # a json-encodable dict
             return fields
+
         return json.JSONEncoder.default(self, obj)
+   return AlchemyEncoder
  
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
