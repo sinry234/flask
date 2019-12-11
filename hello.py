@@ -58,6 +58,7 @@ def class_to_dict(obj):
             obj_arr.append(dict)
         return obj_arr
     elif is_string:
+    	  print(obj)
     	  return obj
     else:
         dict = {}
