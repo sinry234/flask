@@ -1,5 +1,7 @@
 ﻿from flask import Flask, request, flash, url_for, redirect, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.declarative import DeclarativeMeta
+from datetime import datetime
 from sqlalchemy import func, desc
 import pymysql
 import json   #转换成Json格式的程序
@@ -39,6 +41,33 @@ class plan_price_ranges(db.Model):
 			del dict["_sa_instance_state"]
 		return dict
 
+def new_alchemy_encoder():
+    _visited_objs = []
+
+    class AlchemyEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj.__class__, DeclarativeMeta):
+                # don't re-visit self
+                if obj in _visited_objs:
+                    return None
+                _visited_objs.append(obj)
+
+                # an SQLAlchemy class
+                fields = {}
+                for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
+                    data = obj.__getattribute__(field)
+                    try:
+                        if isinstance(data, datetime):
+                            data = data.strftime('%Y-%m-%d %H:%M:%S')
+                        json.dumps(data)  # this will fail on non-encodable values, like other classes
+                        fields[field] = data
+                    except TypeError:
+                        fields[field] = None
+                return fields
+
+            return json.JSONEncoder.default(self, obj)
+    return AlchemyEncoder
+    
 #显示所有数据
 @app.route('/')
 def show_all():
@@ -74,12 +103,10 @@ def comments():
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
     UnReadMsg = plan_price_ranges.query.with_entities(func.sum(plan_price_ranges.unit)).all()
-    #UnReadMsg = self.db.query(Message).filter(Message.uid == self.uid)
     msgs = []
     for msg in UnReadMsg:
-        msgs.append(msg.json)
-    print(msgs)
-    return JsonResponse(self, 50000, data=msgs)   
+        msgs.append(msg)
+    UnReadMsg = json.dumps(msgs, cls=new_alchemy_encoder(), check_circular=False) 
         
 #获取全部数据的分类汇总透视表
 @app.route('/newppr', methods=['GET'])
