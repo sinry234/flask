@@ -124,7 +124,10 @@ def comments():
 @app.route('/get_category_sum', methods=['GET'])
 def get_category_sum():
     UnReadMsg = db.session.query(plan_price_ranges.pclass, func.sum(plan_price_ranges.unit).label("销售数量")).group_by(plan_price_ranges.pclass).all()
-    return plan_price_ranges.class_to_dict(UnReadMsg)
+    result = []
+    for plan_price_range in UnReadMsg:
+        result.append(plan_price_range.to_json())
+    return jsonify({'rows': result})
         
 #获取全部数据的分类汇总透视表
 @app.route('/newppr', methods=['GET'])
