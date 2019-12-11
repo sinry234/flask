@@ -46,9 +46,6 @@ def new_alchemy_encoder():
 
     class AlchemyEncoder(json.JSONEncoder):
         def default(self, obj):
-            if isinstance(obj, Decimal):
-                return float(obj)
-            super(DecimalEncoder, self).default(obj)
             if isinstance(obj.__class__, DeclarativeMeta):
                 # don't re-visit self
                 if obj in _visited_objs:
@@ -62,6 +59,8 @@ def new_alchemy_encoder():
                     try:
                         if isinstance(data, datetime):
                             data = data.strftime('%Y-%m-%d %H:%M:%S')
+                        if isinstance(data, Decimal):
+                            data = float(data)                                               
                         json.dumps(data)  # this will fail on non-encodable values, like other classes
                         fields[field] = data
                     except TypeError:
