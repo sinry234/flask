@@ -58,8 +58,8 @@ class AlchemyEncoder(json.JSONEncoder):
                     elif isinstance(data, datetime.date):
                         fields[field] = datadata.strftime("%Y-%m-%d")
                     elif isinstance(data, decimal.Decimal):
-                        #fields[field]= float(data)
-                        return float(data)
+                        fields[field]= float(data)
+                        #return float(data)
                     else:
                         fields[field] = AlchemyEncoder.default(self, data) # 如果是自定义类，递归调用解析JSON，这个是对象映射关系表 也加入到JSON
             # a json-encodable dict
