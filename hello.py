@@ -46,6 +46,9 @@ def new_alchemy_encoder():
 
     class AlchemyEncoder(json.JSONEncoder):
         def default(self, obj):
+            if isinstance(obj.__class__, decimal.Decimal):
+                return float(obj)
+            super(DecimalEncoder, self).default(obj)
             if isinstance(obj.__class__, DeclarativeMeta):
                 # don't re-visit self
                 if obj in _visited_objs:
