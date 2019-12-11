@@ -6,7 +6,7 @@ from sqlalchemy import func, desc
 import pymysql
 import json   #转换成Json格式的程序
 import numpy as np
-import decimal
+from decimal import Decimal
 
 app = Flask(__name__, static_url_path='')
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:mbitadmin@localhost:3306/flask"
