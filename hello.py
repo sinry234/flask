@@ -54,8 +54,8 @@ class AlchemyEncoder(json.JSONEncoder):
             for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
                 data = obj.__getattribute__(field)
                 try:
-                    if isinstance(data,  decimal.Decimal):
-                        data = float(data)                   
+                    if isinstance(data, decimal.Decimal):
+                        data = float(data)
                     if isinstance(data, datetime):
                         data = data.strftime('%Y-%m-%d %H:%M:%S')
                     json.dumps(data)  # this will fail on non-encodable values, like other classes
