@@ -42,12 +42,8 @@ class plan_price_ranges(db.Model):
 		return dict
 	
 	def to_json2(self):
-      json_data = {
-        'pclass': self.pclass,
-        'unit': self.销售数量
-      }
+      json_data = {'pclass': self.pclass, 'unit': self.销售数量}
       return json.dumps(json_data,cls=DateEncoder)
-
 
 class DateEncoder(json.JSONEncoder):
     def default(self,obj):
