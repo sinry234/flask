@@ -73,9 +73,9 @@ def comments():
 def get_category_sum():
 		#rs = plan_price_ranges.query.with_entities(func.sum(plan_price_ranges.unit)).all()
 		rs = db.session.query(plan_price_ranges.pclass, func.count(plan_price_ranges.unit)).group_by(plan_price_ranges.pclass).all()
-		result1 = []
-		for line1 in rs:
-			result1.append(line1.to_json())
+		#result1 = []
+		#for line1 in rs:
+		#	result1.append(line1.to_json())
 		return rs
         
 #获取全部数据的分类汇总透视表
