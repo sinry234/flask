@@ -44,7 +44,7 @@ class plan_price_ranges(db.Model):
 #当结果为result对象列表时，result有key()方法
 def result_to_dict(results):
     res = [dict(zip(r.keys(), r)) for r in results]
-    return json.dumps(res,cls=DateEncoder)
+    return json.dumps(res,cls=DateEncoder,ensure_ascii=False)
     
 class DateEncoder(json.JSONEncoder):
     def default(self,obj):
